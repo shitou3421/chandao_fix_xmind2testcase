@@ -45,9 +45,13 @@ def gen_a_testcase_row(testcase_dict):
     case_step, case_expected_result = gen_case_step_and_expected_result(testcase_dict['steps'])
     case_keyword = ''
     case_priority = gen_case_priority(testcase_dict['importance'])
-    case_type = gen_case_type(testcase_dict['execution_type'])
-    case_apply_phase = '迭代测试'
-    row = [case_module, case_title, case_precontion, case_step, case_expected_result, case_keyword, case_priority, case_type, case_apply_phase]
+    # case_type = gen_case_type(testcase_dict['execution_type'])
+    # case_type = testcase_dict['execution_type']
+    case_type = '功能测试'
+    case_apply_phase = '功能测试阶段'
+    # case_apply_phase = gen_case_apply_phase(testcase_dict['summary'])
+    row = [case_module, case_title, case_precontion, case_step, case_expected_result, case_keyword, case_priority,
+           case_type, case_apply_phase]
     return row
 
 
@@ -67,26 +71,47 @@ def gen_case_step_and_expected_result(steps):
     for step_dict in steps:
         case_step += str(step_dict['step_number']) + '. ' + step_dict['actions'].replace('\n', '').strip() + '\n'
         case_expected_result += str(step_dict['step_number']) + '. ' + \
-            step_dict['expectedresults'].replace('\n', '').strip() + '\n' \
+                                step_dict['expectedresults'].replace('\n', '').strip() + '\n' \
             if step_dict.get('expectedresults', '') else ''
 
     return case_step, case_expected_result
 
 
+# def gen_case_priority(priority):
+#     mapping = {1: '高', 2: '中', 3: '低'}
+#     if priority in mapping.keys():
+#         return mapping[priority]
+#     else:
+#         return '中'
+
 def gen_case_priority(priority):
     mapping = {1: '高', 2: '中', 3: '低'}
     if priority in mapping.keys():
-        return mapping[priority]
+        return priority
     else:
-        return '中'
+        return '2'
 
+# def gen_case_type(case_type):
+#     mapping = {1: '手动', 2: '自动'}
+#     if case_type in mapping.keys():
+#         return mapping[case_type]
+#     else:
+#         return '手动'
 
 def gen_case_type(case_type):
-    mapping = {1: '手动', 2: '自动'}
-    if case_type in mapping.keys():
-        return mapping[case_type]
+    if case_type == '1' or case_type == '无':
+        return '功能测试'
     else:
-        return '手动'
+        return case_type
+
+#
+# # 添加方法
+# # 测试阶段默认值转换
+# def gen_case_apply_phase(case_apply_phase):
+#     if case_apply_phase == '无':
+#         return '功能测试阶段'
+#     else:
+#         return case_apply_phase
 
 
 if __name__ == '__main__':

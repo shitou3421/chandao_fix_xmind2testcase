@@ -8,7 +8,8 @@ config = {'sep': ' ',
           'valid_sep': '&>+/-',
           'precondition_sep': '\n----\n',
           'summary_sep': '\n----\n',
-          'ignore_char': '#!！'
+          'ignore_char': '#!！',
+          'type_sep': '\n----\n',
           }
 
 
@@ -36,7 +37,7 @@ def xmind_to_testsuites(xmind_content_dict):
 
 def filter_empty_or_ignore_topic(topics):
     """filter blank or start with config.ignore_char topic"""
-    result = [topic for topic in topics if not(
+    result = [topic for topic in topics if not (
             topic['title'] is None or
             topic['title'].strip() == '' or
             topic['title'][0] in config['ignore_char'])]
@@ -136,6 +137,9 @@ def parse_a_testcase(case_dict, parent):
 
     summary = gen_testcase_summary(topics)
     testcase.summary = summary if summary else testcase.name
+    # testcase.summary = summary if summary else "无"
+    execution_type = gen_testcase_type(topics)
+    testcase.execution_type = execution_type if execution_type else '无'
     testcase.execution_type = get_execution_type(topics)
     testcase.importance = get_priority(case_dict) or 2
 
@@ -256,9 +260,7 @@ def get_test_result(markers):
     return result
 
 
-
-
-
-
-
-
+def gen_testcase_type(topics):
+    labels = [topic['label'] for topic in topics]
+    labels = filter_empty_or_ignore_element(labels)
+    return config['type_sep'].join(labels)
